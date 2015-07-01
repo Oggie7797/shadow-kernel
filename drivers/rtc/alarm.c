@@ -403,13 +403,12 @@ static int alarm_suspend(struct platform_device *pdev, pm_message_t state)
 				hrtimer_get_expires(&wakeup_queue->timer).tv64))
 		wakeup_queue = tmp_queue;
 	if (wakeup_queue) {
-		rtc_read_time(alarm_rtc_dev, &rtc_current_rtc_time);
 		getnstimeofday(&wall_time);
 		rtc_tm_to_time(&rtc_current_rtc_time, &rtc_current_time);
 		set_normalized_timespec(&rtc_delta,
 					wall_time.tv_sec - rtc_current_time,
 					wall_time.tv_nsec);
-
+		
 		rtc_alarm_time = timespec_sub(ktime_to_timespec(
 			hrtimer_get_expires(&wakeup_queue->timer)),
 			rtc_delta).tv_sec;
